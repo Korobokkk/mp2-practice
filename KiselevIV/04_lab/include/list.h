@@ -1,46 +1,20 @@
-#pragma once
+#ifndef __LIST_H__
+#define __LIST_H__
 #include <iostream>
+#include "TNode.h"
 using namespace std;
 
-template <typename TKey>
-struct TNode
-{
-    TKey key;
-    TNode* pNext;
-    TNode()
-    {
-        key = TKey();
-        pNext = nullptr;
-    }
-    TNode(TKey a)
-    {
-        key = TKey(a);
-        pNext = nullptr;
-    }
-    const TNode<TKey>& operator = (const TNode<TKey>& node)
-    {
-        if (this == &node)
-        {
-            return *this;
-        }
-        key = node.key;
-        pNext = node.pNext;
-        return *this;
-    }
-
-};
-
-template <typename TKey>
+template <typename T>
 class TList
 {
-private:
-    TNode<TKey>* pFirst;
+protected:
+    TNode<T>* pFirst;
+    TNode<T>* pCurr;
+    TNode<T>* pLast;
+    TNode<T>* pStop;
 public:
-    TList()
-    {
-        pFirst = nullptr;
-    }
-    TList(const TList& list)
+    TList();
+    /*TList(const TList& list)
     {
         if (list.pFirst == nullptr)
         {
@@ -48,8 +22,8 @@ public:
             return;
         }
         pFirst = new TNode<TKey>(list.pFirst->key);
-        TNode<TKey>* curr_origin = list.pFirst->pNext;
-        TNode<TKey>* curr_copy = pFirst;
+        TNode<T>* curr_origin = list.pFirst->pNext;
+        TNode<T>* curr_copy = pFirst;
 
         while (curr_origin != nullptr)
         {
@@ -57,20 +31,10 @@ public:
             curr_copy = curr_copy->pNext;
             curr_origin = curr_origin->pNext;
         }
-    }
-    ~TList()
-    {
-        TNode<TKey>* curr = pFirst;
-        while (curr != nullptr)
-        {
-            TNode<TKey>* tmp = curr->pNext;
-            delete curr;
-            curr = tmp;
-        }
-        pFirst = nullptr;
-    }
+    }*/
+    ~TList();
 
-    TNode<TKey>* search(TKey target_key)
+    /*TNode<TKey>* search(TKey target_key)
     {
         TNode<TKey>* curr = pFirst;
         while (curr != nullptr)
@@ -234,5 +198,41 @@ public:
     bool operator != (const TList <TKey>& list)const
     {
         return !(*this = list);
-    }
+    }*/
 };
+template<typename T>
+TList<T>::TList()
+{
+    pFirst = nullptr;
+    pLast = nullptr;
+    pPrev = nullptr;
+    pCurr = nullptr;
+    pStop = nullptr;
+}
+
+template<typename T>
+TList<T>::~TList()
+{
+    if (pFirst == pStop) {
+        return;
+    }
+
+    pPrev = pFirst;
+    pFirst = pFirst->pNext;
+    
+    while (pFirst != pStop)
+    {
+        delete pPrev;
+        pPrev = pFirst;
+        pFirst = pFirst->pNext;
+    }
+    delete pPrev;
+    pFirst = pFirst->pNext;
+    pLast = nullptr;
+    pPrev = nullptr;
+    pCurr = nullptr;
+    pFirst = nullptr;
+    pStop = nullptr;
+}
+
+#endif
