@@ -19,20 +19,8 @@ public:
     TList(const TList& list);
     ~TList();
 
-    /*TNode<TKey>* search(TKey target_key)
-    {
-        TNode<TKey>* curr = pFirst;
-        while (curr != nullptr)
-        {
-            if (curr->key == target_key)
-            {
-                return curr;
-            }
-            curr = curr->pNext;
-        }
-        return nullptr;
-    }
-    void push_front(TNode<TKey>* newNode)
+    TNode<T>* Search(const T& Data);
+    /*void push_front(TNode<TKey>* newNode)
     {
         if (pFirst == nullptr)
         {
@@ -270,6 +258,18 @@ TList<T>::~TList()
     pCurr = nullptr;
     pFirst = nullptr;
     pStop = nullptr;
+}
+template<typename T>
+TNode<T>* TList<T>::Search(const T& Data)
+{
+    TNode<T>* curr = pFirst;
+    while (curr != pStop) {
+        if (curr->Data == Data)
+        {
+            return curr;
+        }
+    }
+    return nullptr;
 }
 
 #endif

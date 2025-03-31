@@ -12,7 +12,7 @@ public:
     TNode* pNext;
 
     TNode() : Data(T()), pNext(nullptr) {}
-    TNode(const T& tmpdata, TNode* tmppNext = nullptr) : data(tmpdata), pNext(tmppNext) {};
+    TNode(const T& tmpdata, TNode* tmppNext = nullptr) : Data(tmpdata), pNext(tmppNext) {};
 };
 
 #endif
