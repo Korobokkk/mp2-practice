@@ -11,7 +11,7 @@ public:
     T Data;
     TNode* pNext;
 
-    TNode() : data(), pNext(nullptr) {}
+    TNode() : Data(T()), pNext(nullptr) {}
     TNode(const T& tmpdata, TNode* tmppNext = nullptr) : data(tmpdata), pNext(tmppNext) {};
 };
 

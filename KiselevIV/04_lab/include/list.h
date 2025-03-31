@@ -12,26 +12,11 @@ protected:
     TNode<T>* pCurr;
     TNode<T>* pLast;
     TNode<T>* pStop;
+    TNode<T>* pPrev;
 public:
     TList();
-    /*TList(const TList& list)
-    {
-        if (list.pFirst == nullptr)
-        {
-            pFirst = nullptr;
-            return;
-        }
-        pFirst = new TNode<TKey>(list.pFirst->key);
-        TNode<T>* curr_origin = list.pFirst->pNext;
-        TNode<T>* curr_copy = pFirst;
-
-        while (curr_origin != nullptr)
-        {
-            curr_copy->pNext = new TNode<TKey>(curr_origin->key);
-            curr_copy = curr_copy->pNext;
-            curr_origin = curr_origin->pNext;
-        }
-    }*/
+    TList(TNode<T>* pFirstSource);
+    TList(const TList& list);
     ~TList();
 
     /*TNode<TKey>* search(TKey target_key)
@@ -209,25 +194,77 @@ TList<T>::TList()
     pCurr = nullptr;
     pStop = nullptr;
 }
+template<typename T>
+TList<T>::TList(TNode<T>* pFirstSource)
+{
+    pPrev = nullptr;
+    pStop = nullptr;
+    if (pFirstSource == pStop) 
+    {
+        pPrev = nullptr;
+        pFirst = nullptr;
+        pCurr = nullptr;
+        pLast = nullptr;
+        return;
+    }
+    pFirst = new TNode<T>(pFirstSource->Data);
+    pCurr = pFirst;
+    pLast = pFirst;
+    TNode<T>* tmp = pFirstSource->pNext;
+    while (tmp != pStop)
+    {
+        pCurr->pNext = new TNode<T>(tmp->Data);
+        pPrev = pCurr;
+        pCurr = pCurr->pNext;
+        tmp = tmp->pNext;
+    }
+    pLast = pCurr;
+    pCurr = pFirst;
+}
+template<typename T>
+TList<T>::TList(const TList<T>& list) 
+{
+    //pFirst = nullptr;
+    pStop = nullptr;
+    pPrev = nullptr;
+    if (list.pFirst == pStop)
+    {
+        pFirst = nullptr;
+        pCurr = nullptr;
+        pLast = nullptr;
+        return;
+    }
+
+    pFirst = new TNode<T>(*list.pFirst);
+    pLast = pFirst;
+    pCurr = pFirst;
+    TNode<T>* curr_copy = pFirst;
+    TNode<T>* tmp = list.pFirst->pNext;
+
+    while (tmp != pStop)
+    {
+        curr_copy->pNext = new TNode<T>(tmp->Data);
+        curr_copy = curr_copy->pNext;
+        tmp = tmp->pNext;
+    }
+    pLast = list.pLast;
+    pCurr = pFirst;
+}
 
 template<typename T>
 TList<T>::~TList()
 {
+    pCurr = pFirst;
     if (pFirst == pStop) {
         return;
     }
 
-    pPrev = pFirst;
-    pFirst = pFirst->pNext;
-    
-    while (pFirst != pStop)
+    while (pCurr != pStop)
     {
-        delete pPrev;
-        pPrev = pFirst;
-        pFirst = pFirst->pNext;
+        TNode<T>* tmp = pCurr;
+        pCurr = pCurr->pNext;
+        delete tmp;
     }
-    delete pPrev;
-    pFirst = pFirst->pNext;
     pLast = nullptr;
     pPrev = nullptr;
     pCurr = nullptr;
