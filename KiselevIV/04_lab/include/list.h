@@ -20,6 +20,8 @@ public:
     ~TList();
 
     TNode<T>* Search(const T& Data);
+    void pushFront(TNode<T>* newNode);
+    void pushBack(TNode<T>* newNode);
     /*void push_front(TNode<TKey>* newNode)
     {
         if (pFirst == nullptr)
@@ -270,6 +272,39 @@ TNode<T>* TList<T>::Search(const T& Data)
         }
     }
     return nullptr;
+}
+
+template<typename T>
+void TList<T>::pushFront(TNode<T>* newNode)
+{
+    if (newNode == nullptr)
+    {
+        return;
+    }
+    newNode->pNext = pFirst;
+    pFirst = newNode;
+    if (pLast = nullptr) {
+        pLast = pFirst;
+    }    
+}
+
+template<typename T>
+void TList<T>::pushBack(TNode<T>* newNode)
+{
+    if (newNode == nullptr)
+    {
+        return;
+    }
+    if (pFirst = nullptr)
+    {
+        pFirst = newNode;
+        pLast = pFirst;
+        pCurr = pFirst;
+        return;
+    }
+    pLast->pNext = newNode;
+    pLast = newNode;
+    pCurr = pFirst;
 }
 
 #endif
