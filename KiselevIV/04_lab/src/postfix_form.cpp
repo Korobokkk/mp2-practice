@@ -1,3 +1,5 @@
+#ifndef __POSTFIX_FORM_CPP__
+#define __POSTFIX_FORM_CPP__
 #include "postfix_form.h"
 #include "array_stack.h"
 #include "list_stack.h"
@@ -238,3 +240,4 @@ void allocStack(stack<TElem>*& s, char stackType)
     }
     return;
 }
+#endif

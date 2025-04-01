@@ -59,7 +59,7 @@ public:
         return false;
 
     }
-    bool is_empty()const
+   /* bool is_empty()const
     {
         return elems.empty();
     }
@@ -75,7 +75,7 @@ public:
     bool operator == (const list_stack <TElem>& s)const
     {
         return (elems == s.elems);
-    }
+    }*/
     bool operator != (const list_stack <TElem>& s)const
     {
         return !(*this == s);
