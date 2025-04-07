@@ -1,38 +1,32 @@
 #pragma once
 #include "stack.h"
 template <typename TElem>
-class Liststack : public stack<TElem>
+class list_stack : public stack<TElem>
 {
 private:
-    TList<TElem> el;
+    TList<TElem> elems;
 
 public:
-    Liststack() {};
-    Liststack(const Liststack<TElem>& s)
+    list_stack() {};
+    list_stack(const list_stack<TElem>& s)
     {
-        el = s.el;
+        elems = s.elems;
     }
-    
     void push(const TElem& e)
     {
         if (is_full())
         {
-            throw "FULL STACK";
+            throw "stack is full!";
         }
-
         TNode<TElem>* newNode = new TNode<TElem>(e);
-        el.push_front(newNode);
+        elems.push_front(newNode);
         return;
     }
-
-
     TElem show_top()const
     {
-        return el.first();
+        return elems.first();
     }
-
-
-    void pop() 
+    void pop()
     {
         if (is_empty())
         {
@@ -40,14 +34,13 @@ public:
         }
         try
         {
-            el.remove(el.first());
+            elems.remove(elems.first());
         }
         catch (...)
         {
             throw "EMPTY STACK";
         }
     }
-
     bool is_full()const
     {
         try
@@ -59,7 +52,6 @@ public:
             }
             delete newNode;
         }
-        
         catch (...)
         {
             return true;
@@ -67,28 +59,24 @@ public:
         return false;
 
     }
-
     bool is_empty()const
     {
-        return el.empty();
+        return elems.empty();
     }
-
-    const Liststack <TElem>& operator= (const Liststack <TElem>& s)
+    const list_stack <TElem>& operator = (const list_stack <TElem>& s)
     {
         if (this == &s)
         {
             return *this;
         }
-        el = s.el;
+        elems = s.elems;
         return *this;
     }
-
-    bool operator== (const Liststack <TElem>& s)const
+    bool operator == (const list_stack <TElem>& s)const
     {
-        return (el == s.el);
+        return (elems == s.elems);
     }
-
-    bool operator!= (const Liststack <TElem>& s)const
+    bool operator != (const list_stack <TElem>& s)const
     {
         return !(*this == s);
     }

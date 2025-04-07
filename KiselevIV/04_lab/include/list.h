@@ -254,11 +254,11 @@ public:
     }
 
     T get_first_data() const {
-        return pFirst->Data;
+        return pFirst->key;
     }
-    T get_last_key() const {
+    /*T get_last_key() const {
         return pLast->Key;
-    }
+    }*/
 
     T get_last_data() const {
         return pLast->Data;
