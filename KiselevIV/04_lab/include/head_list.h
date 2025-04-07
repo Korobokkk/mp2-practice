@@ -1,83 +1,27 @@
 #pragma once
-#include "stack.h"
-template <typename TElem>
-class list_stack : public stack<TElem>
+#include "List.h"
+
+template <typename T>
+class THeadList :public TList<T> 
 {
-private:
-    TList<TElem> elems;
+protected:
+    TNode<T>* pHead;
 
 public:
-    list_stack() {};
-    list_stack(const list_stack<TElem>& s)
+    THeadList() {};
+    THeadList(const THeadList<T>&s)
     {
         elems = s.elems;
     }
-    void push(const TElem& e)
-    {
-        if (is_full())
-        {
-            throw "stack is full!";
-        }
-        TNode<TElem>* newNode = new TNode<TElem>(e);
-        elems.push_front(newNode);
-        return;
-    }
-    TElem show_top()const
-    {
-        return elems.first();
-    }
-    void pop()
-    {
-        if (is_empty())
-        {
-            throw "EMPTY STACK";
-        }
-        try
-        {
-            elems.remove(elems.first());
-        }
-        catch (...)
-        {
-            throw "EMPTY STACK";
-        }
-    }
-    bool is_full()const
-    {
-        try
-        {
-            TNode<TElem>* newNode = new TNode<TElem>();
-            if (newNode == nullptr)
-            {
-                return true;
-            }
-            delete newNode;
-        }
-        catch (...)
-        {
-            return true;
-        }
-        return false;
+    ~THeadList();
+    virtual void pushFront(int key, T val);
+    virtual void popFront();
+    virtual const THeadList<T>& operator=(const THeadList<T>&s);
 
-    }
-    bool is_empty()const
-    {
-        return elems.empty();
-    }
-    const list_stack <TElem>& operator = (const list_stack <TElem>& s)
-    {
-        if (this == &s)
-        {
-            return *this;
-        }
-        elems = s.elems;
-        return *this;
-    }
-    bool operator == (const list_stack <TElem>& s)const
-    {
-        return (elems == s.elems);
-    }
-    bool operator != (const list_stack <TElem>& s)const
-    {
-        return !(*this == s);
-    }
 };
+
+template <typename T>
+const THeadList <T>& THeadList<T>::operator = (const THeadList <T>&s)
+{
+    
+}
