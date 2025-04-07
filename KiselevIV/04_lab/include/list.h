@@ -103,6 +103,7 @@ public:
         if (empty())
         {
             pFirst = newNode;
+            pLast = pFirst;
             return;
         }
         while (pCurr->pNext != nullptr)
@@ -122,7 +123,7 @@ public:
         }
         newNode->pNext = pCurr->pNext;
         pCurr->pNext = newNode;
-        if (pCurr = pLast) 
+        if (pCurr == pLast) 
         {
             pLast = pCurr;
         }
@@ -155,31 +156,30 @@ public:
     }
     void remove(T target_key)
     {
-        pCurr = pFirst;
-        pPrev = nullptr;
-        if (search(target_key) == nullptr)
-        {
+        TNode<T>* current = pFirst;
+        TNode<T>* previous = nullptr;
+
+        while (current != nullptr && current->key != target_key) {
+            previous = current;
+            current = current->pNext;
+        }
+        if (current == nullptr) {
             throw "no key found!";
         }
-        if (pFirst->key == target_key)
-        {
-            pFirst = pCurr->pNext;
-            delete pCurr;
-            return;
+        if (previous == nullptr) {
+            pFirst = current->pNext;
         }
-        while (pCurr != nullptr && pCurr->key != target_key)
-        {
-            pPrev = pCurr;
-            pCurr = pCurr->pNext;
+        else {
+            previous->pNext = current->pNext;
         }
-        pPrev->pNext = pCurr->pNext;
 
+        delete current;
     }
     int size()const
     {
         TNode<T>* curr = pFirst;
-        int sz = 1;
-        while (curr->pNext != nullptr)
+        int sz = 0;
+        while (curr != pStop)
         {
             sz++;
             curr = curr->pNext;
@@ -204,9 +204,13 @@ public:
         {
             return *this;
         }
+
+        this->~TList();
+
         if (list.pFirst == nullptr)
         {
             pFirst = nullptr;
+            pLast = nullptr;
             return *this;
         }
         pFirst = new TNode<T>(list.pFirst->key);
@@ -246,6 +250,17 @@ public:
     }
     bool operator != (const TList <T>& list)const
     {
-        return !(*this = list);
+        return !(*this == list);
+    }
+
+    T get_first_data() const {
+        return pFirst->Data;
+    }
+    T get_last_key() const {
+        return pLast->Key;
+    }
+
+    T get_last_data() const {
+        return pLast->Data;
     }
 };
