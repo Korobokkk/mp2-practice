@@ -252,6 +252,22 @@ public:
     {
         return !(*this == list);
     }
+    void pop_front()
+    {
+        if (empty())
+        {
+            throw "STACK S EMPTY"
+        }
+
+        TList<T>* tmp = pFirst;
+        pFirst = pFirst->pNext;
+        if (pFirst == nullptr)
+        {
+            pLast = nullptr;
+        }
+        delete tmp;
+
+    }
 
     T get_first_data() const {
         return pFirst->key;

@@ -35,24 +35,33 @@ const TRingHeadList<T>& TRingHeadList<T>:: operator=(const TRingHeadList<T>& s)
 template <typename T>
 void TRingHeadList<T>::push_front(int key, T val)
 {
-
+    THeadList<T>::pushfront(key, val);
+    pLast->pNext = pHead;
 }
 
 template <typename T>
 void TRingHeadList<T>::push_back(int key, T val) 
 {
-
+    TList<T>::push_back(key, val);
+    pLast->pNext = pHead;
+    
 }
 
 template <typename T>
 void TRingHeadList<T>::push_after(int key, T val)
 {
-
+    THeadList<T>::popFront();
+    if (pLast != nullptr)
+    {
+        pLast->pNext = pHead;
+    }
 }
 template <typename T>
 void TRingHeadList<T>::push_before(int key, T val) 
 {
-
+    TList<T>::push_before();
+    if (pLast != nullptr)
+        pLast->pNext = pHead;
 }
 
 #endif
