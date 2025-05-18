@@ -191,13 +191,13 @@ TEST(TList, can_get_first_elem)
     TList<int> list;
     TNode<int>* Node = new TNode<int>(12);
     list.push_front(Node);
-    EXPECT_EQ(list.first(), 12);
+    EXPECT_EQ(list.get_first_key(), 12);
 }
 
 TEST(TList, cant_get_first_elem_from_empty_list)
 {
     TList<int> list;
-    ASSERT_ANY_THROW(list.first());
+    ASSERT_ANY_THROW(list.get_first_key());
 }
 
 TEST(TList, empty_true_for_empty_list)

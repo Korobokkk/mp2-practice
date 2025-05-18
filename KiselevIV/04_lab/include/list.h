@@ -22,11 +22,10 @@ protected:
     TNode<T>* pLast;
     TNode<T>* pCurr;
     TNode<T>* pPrev;
-    TNode<T>* pStop;
+    //TNode<T>* pStop;
 public:
     TList()
     {
-        pStop = nullptr;
         pFirst = nullptr;
         pLast = nullptr;
         pPrev = nullptr;
@@ -34,31 +33,36 @@ public:
     }
     TList(const TList& list)
     {
-        if (list.pFirst == list.pStop)
+        pLast = nullptr;
+        pPrev = nullptr;
+        pCurr = nullptr;
+
+        if (list.pFirst == nullptr)
         {
             pFirst = nullptr;
             return;
         }
         pFirst = new TNode<T>(list.pFirst->key);
-        TNode<T>* curr_origin = list.pFirst->pNext;
+        TNode<T>* curr_origin = pFirst->pNext;
+        TNode<T>* curr_copy = pFirst;
         pCurr = pFirst;
 
         while (curr_origin != nullptr)
         {
-            pCurr->pNext = new TNode<T>(curr_origin->key);
-            pCurr = pCurr->pNext;
+            curr_copy->pNext= new TNode<T>(curr_origin->key);
+            curr_copy = curr_copy->pNext;
             curr_origin = curr_origin->pNext;
         }
-        pLast = list.pLast;
+        pLast = curr_copy;
         pCurr = nullptr;
-        pStop = list.pStop;
     }
     ~TList()
     {
         pCurr = pFirst;
+        TNode<T>* tmp = nullptr;
         while (pCurr != nullptr)
-        {
-            TNode<T>* tmp = pCurr->pNext;
+        {      
+            tmp = pCurr->pNext;
             delete pCurr;
             pCurr = tmp;
         }
@@ -79,15 +83,19 @@ public:
             }
             pCurr = pCurr->pNext;
         }
-        pCurr = pStop;
         return nullptr;
     }
     void push_front(TNode<T>* newNode)
     {
+        if (newNode == nullptr)
+        {
+            throw "newNode is empty!";
+        }
+
         if (empty())
         {
             pFirst = newNode;
-            pLast = pStop;
+            pLast = pFirst;
             return;
         }
         newNode->pNext = pFirst;
@@ -97,8 +105,9 @@ public:
     {
         if (newNode == nullptr)
         {
-            throw "node is empty!";
+            throw "newNode is empty!";
         }
+
         pCurr = pFirst;
         if (empty())
         {
@@ -111,89 +120,97 @@ public:
             pCurr = pCurr->pNext;
         }
         pCurr->pNext = newNode;
-        pLast = pCurr->pNext;
+        pLast = newNode;
     }
     void push_after(TNode<T>* newNode, T target_key)
     {
+        if (newNode == nullptr)
+        {
+            throw "newNode is empty!";
+        }
 
         pCurr = this->search(target_key);
-        if (pCurr== pStop)
+        if (pCurr== nullptr)
         {
             throw "no key found!";
         }
+
         newNode->pNext = pCurr->pNext;
         pCurr->pNext = newNode;
-        if (pCurr == pLast) 
+        if (newNode->pNext == nullptr) 
         {
-            pLast = pCurr;
+            pLast = newNode;
         }
-        pCurr = pStop;
+        pCurr = nullptr;
     }
     void push_before(TNode<T>* newNode, T target_key)
     {
         if (empty()) {
             throw "List is Empty";
         }
+
         if (pFirst->key == target_key)
         {
             push_front(newNode);
             return;
         }
+
         pCurr = pFirst->pNext;
         pPrev = nullptr;
-        while (pCurr != pStop && pCurr->key != target_key)
+        while (pCurr != nullptr && pCurr->key != target_key)
         {
             pPrev = pCurr;
             pCurr = pCurr->pNext;
         }
-        if (pCurr == pStop && pCurr->key != target_key)
+
+        if (pCurr == nullptr)
         {
             throw "no key found!";
         }
+
         TNode<T>* tmp = pCurr;
         pPrev->pNext = newNode;
         newNode->pNext = tmp;
     }
     void remove(T target_key)
     {
-        TNode<T>* current = pFirst;
-        TNode<T>* previous = nullptr;
+        pCurr = pFirst;
+        pPrev = nullptr;
 
-        while (current != nullptr && current->key != target_key) {
-            previous = current;
-            current = current->pNext;
-        }
-        if (current == nullptr) {
+        TNode<T>* node = search(target_key);
+        if (node == nullptr) {
             throw "no key found!";
         }
-        if (previous == nullptr) {
-            pFirst = current->pNext;
-        }
-        else {
-            previous->pNext = current->pNext;
+
+        if (node == pFirst) {
+            pop_front();  
+            return;
         }
 
-        delete current;
+        pPrev = pFirst;
+        while (pPrev->pNext != node) {
+            pPrev = pPrev->pNext;
+        }
+        pPrev->pNext = node->pNext;
+        if (node == pLast) {
+            pLast = pPrev;
+        }
+        pCurr = nullptr;
+        pPrev = nullptr;
+        
     }
     int size()const
     {
         TNode<T>* curr = pFirst;
         int sz = 0;
-        while (curr != pStop)
+        while (curr != nullptr)
         {
             sz++;
             curr = curr->pNext;
         }
         return sz;
     }
-    T first()const
-    {
-        if (pFirst == nullptr)
-        {
-            throw "list is empty";
-        }
-        return pFirst->key;
-    }
+    
     bool empty()const
     {
         return pFirst == nullptr;
@@ -205,7 +222,10 @@ public:
             return *this;
         }
 
-        this->~TList();
+        while (!empty())
+        {
+            pop_front();
+        }
 
         if (list.pFirst == nullptr)
         {
@@ -223,6 +243,9 @@ public:
             curr_copy = curr_copy->pNext;
             curr_origin = curr_origin->pNext;
         }
+        pPrev = nullptr;
+        pLast = curr_copy;
+
         return *this;
     }
     bool operator == (const TList <T>& list)const
@@ -256,10 +279,10 @@ public:
     {
         if (empty())
         {
-            throw "STACK S EMPTY"
+            throw "STACK S EMPTY";
         }
 
-        TList<T>* tmp = pFirst;
+        TNode<T>* tmp = pFirst;
         pFirst = pFirst->pNext;
         if (pFirst == nullptr)
         {
@@ -268,15 +291,44 @@ public:
         delete tmp;
 
     }
+    void pop_back()
+    {
+        if (empty())
+        {
+            throw "list is empty";
+        }
+        if (pFirst == pLast)
+        {
+            delete pFirst;
+            pFirst = pLast = nullptr;
+            return;
+        }
 
-    T get_first_data() const {
+        TNode<T>* prev = pFirst;
+        while (prev->pNext != pLast) 
+        {
+            prev = prev->pNext;
+        }
+
+        delete pLast;
+        pLast = prev;
+        pLast->pNext = nullptr;
+    }
+    T get_first_key() const {
+        if (empty())
+        {
+            throw "list is empty";
+        }
         return pFirst->key;
     }
-    /*T get_last_key() const {
-        return pLast->Key;
-    }*/
-
-    T get_last_data() const {
-        return pLast->Data;
+    T get_last_key() const {
+        if (empty())
+        {
+            throw "list is empty";
+        }
+        return pLast->key;
     }
 };
+// в конце list.h или в тестовом .cpp
+template class TList<int>;
+template class TList<std::string>;

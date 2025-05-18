@@ -41,3 +41,4 @@ void THeadList<T>::pop_front()
 {
     TList<T>::pop_front();
 }
+
