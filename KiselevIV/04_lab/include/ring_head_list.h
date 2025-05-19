@@ -4,60 +4,79 @@
 #include "head_list.h"
 
 template <typename T>
-class TRingHeadList : public THeadList<T> 
+class RingHeadList : public THeadList<T> 
 {
+protected:
+    TNode<T>* pStop;
 public:
-    TRingHeadList() : pStop = pHead{};
-    TRingHeadList(const TRingHeadList<T>& list);
-    ~TRingHeadList() {};
-    const TRingHeadList& operator=(const TRingHeadList<T>& s);
-    virtual void push_front(int key, T val);
-    virtual void push_back(int key, T val);
-    virtual void push_after(int key, T val);
-    virtual void push_before(int key, T val);
+    RingHeadList();
+    RingHeadList(const RingHeadList<T>& list);
+    ~RingHeadList();
 
+    void push_front(TNode<T>* newNode) override;
+    void push_back(TNode<T>* newNode) override;
+    void push_after(TNode<T>* newNode, T data) override;
+    void push_before(TNode<T>* newNode, T data) override;
+    void remove(T target_key) override;
 
+    const RingHeadList<T>& operator=(const RingHeadList<T>& list);
 };
 
 template <typename T>
-TRingHeadList<T>::TRingHeadList(const TRingHeadList<T>& list) : THeadList<T>(list)
-{
-    if (pLast != nullptr)
-        pLast->pNext = pHead;
+RingHeadList<T>::RingHeadList() : THeadList<T>() {
+    pHead->pNext = pHead;
+    pFirst = pHead;
+    pLast = pHead;
+}
+template <typename T>
+RingHeadList<T>::RingHeadList(const RingHeadList<T>& list) : THeadList<T>(list) {
     pStop = pHead;
-};
+    pLast->pNext = pHead;
+}
+
+template <typename T>
+RingHeadList<T>::~RingHeadList() {
+    clear();
+}
+
 template< typename T>
-const TRingHeadList<T>& TRingHeadList<T>:: operator=(const TRingHeadList<T>& s)
+const RingHeadList<T>& RingHeadList<T>:: operator=(const RingHeadList<T>& list)
 {
-
+    THeadList<T>::operator=(list);
+    pStop = pHead;
+    if (pLast != nullptr)
+        pLast->pNext = pStop;
+    return *this;
 }
 
 template <typename T>
-void TRingHeadList<T>::push_front(int key, T val)
+void RingHeadList<T>::push_front(TNode<T>* node)
 {
-    THeadList<T>::pushfront(key, val);
-    pLast->pNext = pHead;
+    THeadList<T>::pushfront(node);
+    pStop = pHead;
+    pLast->pNext = pStop;
 }
 
 template <typename T>
-void TRingHeadList<T>::push_back(int key, T val) 
+void RingHeadList<T>::push_back(TNode<T>* node) 
 {
-    TList<T>::push_back(key, val);
-    pLast->pNext = pHead;
+    TList<T>::push_back(node);
+    pStop = pHead;
+    pLast->pNext = pStop;
     
 }
 
 template <typename T>
-void TRingHeadList<T>::push_after(int key, T val)
+void RingHeadList<T>::push_after(TNode<T>* node, T data)
 {
-    THeadList<T>::popFront();
+    THeadList<T>::popFront(node);
     if (pLast != nullptr)
     {
         pLast->pNext = pHead;
     }
 }
 template <typename T>
-void TRingHeadList<T>::push_before(int key, T val) 
+void RingHeadList<T>::push_before(TNode<T>* node, T data) 
 {
     TList<T>::push_before();
     if (pLast != nullptr)
