@@ -43,7 +43,7 @@ public:
             return;
         }
         pFirst = new TNode<T>(list.pFirst->key);
-        TNode<T>* curr_origin = pFirst->pNext;
+        TNode<T>* curr_origin = list.pFirst->pNext;
         TNode<T>* curr_copy = pFirst;
         pCurr = pFirst;
 
